@@ -15,10 +15,23 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", socket => {
   console.log("New Socket Connction");
 
-  socket.emit("welcomeMessage", "Welcome!");
+  socket.emit("message", "Welcome!");
+  socket.broadcast.emit("message", "A New User Has Joined");
 
   socket.on("sendMessage", message => {
     io.emit("message", message);
+  });
+
+  socket.on("sendLocation", coords => {
+    console.log(coords);
+    io.emit(
+      "message",
+      `https://google.com/maps?q=${coords.lat},${coords.long}`
+    );
+  });
+
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left");
   });
 });
 
