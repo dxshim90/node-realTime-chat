@@ -8,6 +8,10 @@ const messages = document.querySelector("#messages");
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#location-template").innerHTML;
 
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true
+});
+
 socket.on("message", message => {
   const html = Mustache.render(messageTemplate, {
     message: message.text,
@@ -16,9 +20,10 @@ socket.on("message", message => {
   messages.insertAdjacentHTML("beforeend", html);
 });
 
-socket.on("locationMessage", url => {
+socket.on("locationMessage", message => {
   const html = Mustache.render(locationTemplate, {
-    url
+    url: message.url,
+    createdAt: moment(message.createdAt).format("h:mm a")
   });
   messages.insertAdjacentHTML("beforeend", html);
 });
@@ -61,3 +66,5 @@ locationButton.addEventListener("click", () => {
     );
   });
 });
+
+socket.emit("join", { username, room });
