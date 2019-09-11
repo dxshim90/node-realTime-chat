@@ -36,15 +36,35 @@ const removeUser = id => {
   }
 };
 
-addUser({
-  id: 22,
-  username: "Dan",
-  room: "london"
-});
+const getUser = id => {
+  const user = users.find(user => {
+    return user.id === id;
+  });
+  if (user) {
+    return user;
+  } else {
+    return {
+      error: "No user found"
+    };
+  }
+};
 
-console.log(users);
+const getUsersinRoom = room => {
+  const usersinRoom = users.filter(user => {
+    return user.room === room;
+  });
+  if (usersinRoom.length !== 0) {
+    return usersinRoom;
+  } else {
+    return {
+      error: `There are currently no users in room: ${room}`
+    };
+  }
+};
 
-const removedUser = removeUser(22);
-
-console.log(removeUser);
-console.log(users);
+module.exports = {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersinRoom
+};
